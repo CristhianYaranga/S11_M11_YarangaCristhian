@@ -1,0 +1,345 @@
+<div class="page-wrapper">
+  <div class="header-section">
+    <h2 class="titulo">✨ Gestión de Estudiantes</h2>
+    <p class="subtitle">Administra el registro, edición y visualización de estudiantes</p>
+  </div>
+
+  <div class="container">
+    <!-- FORMULARIO -->
+    <div class="formulario">
+      <div class="form-header">
+        <h3>
+          {{ editando ? '✏️ Editar Estudiante' : '➕ Registrar Estudiante' }}
+        </h3>
+        <p class="form-status" *ngIf="editando">
+          Paso {{ paso }} de 2
+        </p>
+      </div>
+
+      <form [formGroup]="estudianteForm" (ngSubmit)="guardarEstudiante()" class="reactive-form">
+        <!-- PASO 1 -->
+        <div *ngIf="paso === 1" class="form-step">
+          <!-- Nombre y Apellido -->
+          <div class="doble">
+            <div class="form-group">
+              <label>Nombre *</label>
+              <div class="input-wrapper">
+                <input type="text" placeholder="Ej: Juan" formControlName="nombre"
+                  [class.is-valid]="esValido('nombre')" [class.is-invalid]="tieneError('nombre')" />
+                <span class="icon" *ngIf="esValido('nombre')">✓</span>
+                <span class="icon error" *ngIf="tieneError('nombre')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('nombre')">
+                {{ obtenerErrorMessage('nombre') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Apellido *</label>
+              <div class="input-wrapper">
+                <input type="text" placeholder="Ej: Pérez" formControlName="apellido"
+                  [class.is-valid]="esValido('apellido')" [class.is-invalid]="tieneError('apellido')" />
+                <span class="icon" *ngIf="esValido('apellido')">✓</span>
+                <span class="icon error" *ngIf="tieneError('apellido')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('apellido')">
+                {{ obtenerErrorMessage('apellido') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Correo y Teléfono -->
+          <div class="doble">
+            <div class="form-group">
+              <label>Correo Electrónico *</label>
+              <div class="input-wrapper">
+                <input type="email" placeholder="Ej: juan@example.com" formControlName="correo"
+                  [class.is-valid]="esValido('correo')" [class.is-invalid]="tieneError('correo')" />
+                <span class="icon" *ngIf="esValido('correo')">✓</span>
+                <span class="icon error" *ngIf="tieneError('correo')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('correo')">
+                {{ obtenerErrorMessage('correo') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Teléfono *</label>
+              <div class="input-wrapper">
+                <input type="tel" placeholder="Ej: 3001234567" formControlName="telefono"
+                  [class.is-valid]="esValido('telefono')" [class.is-invalid]="tieneError('telefono')" />
+                <span class="icon" *ngIf="esValido('telefono')">✓</span>
+                <span class="icon error" *ngIf="tieneError('telefono')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('telefono')">
+                {{ obtenerErrorMessage('telefono') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Edad y Código -->
+          <div class="doble">
+            <div class="form-group">
+              <label>Edad *</label>
+              <div class="input-wrapper">
+                <input type="number" placeholder="Ej: 20" formControlName="edad"
+                  [class.is-valid]="esValido('edad')" [class.is-invalid]="tieneError('edad')" />
+                <span class="icon" *ngIf="esValido('edad')">✓</span>
+                <span class="icon error" *ngIf="tieneError('edad')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('edad')">
+                {{ obtenerErrorMessage('edad') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Código Estudiante *</label>
+              <div class="input-wrapper">
+                <input type="text" placeholder="Ej: EST001" formControlName="codigo"
+                  [class.is-valid]="esValido('codigo')" [class.is-invalid]="tieneError('codigo')" />
+                <span class="icon" *ngIf="esValido('codigo')">✓</span>
+                <span class="icon error" *ngIf="tieneError('codigo')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('codigo')">
+                {{ obtenerErrorMessage('codigo') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Progreso del Paso -->
+          <div class="progress-bar">
+            <div class="progress" style="width: 50%"></div>
+          </div>
+
+          <!-- BOTÓN SIGUIENTE -->
+          <div class="acciones-form">
+            <button type="button" class="btn-next" (click)="siguientePaso()">
+              Siguiente Paso ➜
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 2 -->
+        <div *ngIf="paso === 2" class="form-step">
+          <!-- Carrera y Género -->
+          <div class="doble">
+            <div class="form-group">
+              <label>Carrera *</label>
+              <div class="input-wrapper">
+                <select formControlName="carrera"
+                  [class.is-valid]="esValido('carrera')" [class.is-invalid]="tieneError('carrera')">
+                  <option value="">-- Seleccione una carrera --</option>
+                  <option *ngFor="let carrera of carreras">{{ carrera }}</option>
+                </select>
+                <span class="icon" *ngIf="esValido('carrera')">✓</span>
+                <span class="icon error" *ngIf="tieneError('carrera')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('carrera')">
+                {{ obtenerErrorMessage('carrera') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Género *</label>
+              <div class="input-wrapper">
+                <select formControlName="genero"
+                  [class.is-valid]="esValido('genero')" [class.is-invalid]="tieneError('genero')">
+                  <option value="">-- Seleccione un género --</option>
+                  <option *ngFor="let genero of generos">{{ genero }}</option>
+                </select>
+                <span class="icon" *ngIf="esValido('genero')">✓</span>
+                <span class="icon error" *ngIf="tieneError('genero')">✗</span>
+              </div>
+              <div class="error-message" *ngIf="tieneError('genero')">
+                {{ obtenerErrorMessage('genero') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Fecha de Nacimiento -->
+          <div class="form-group full-width">
+            <label>Fecha de Nacimiento *</label>
+            <div class="input-wrapper">
+              <input type="date" formControlName="fechaNacimiento"
+                [class.is-valid]="esValido('fechaNacimiento')" [class.is-invalid]="tieneError('fechaNacimiento')" />
+              <span class="icon" *ngIf="esValido('fechaNacimiento')">✓</span>
+              <span class="icon error" *ngIf="tieneError('fechaNacimiento')">✗</span>
+            </div>
+            <div class="error-message" *ngIf="tieneError('fechaNacimiento')">
+              {{ obtenerErrorMessage('fechaNacimiento') }}
+            </div>
+          </div>
+
+          <!-- Dirección -->
+          <div class="form-group full-width">
+            <label>Dirección *</label>
+            <div class="input-wrapper">
+              <textarea placeholder="Ingrese la dirección completa" formControlName="direccion"
+                [class.is-valid]="esValido('direccion')" [class.is-invalid]="tieneError('direccion')"></textarea>
+              <span class="icon" *ngIf="esValido('direccion')">✓</span>
+              <span class="icon error" *ngIf="tieneError('direccion')">✗</span>
+            </div>
+            <div class="error-message" *ngIf="tieneError('direccion')">
+              {{ obtenerErrorMessage('direccion') }}
+            </div>
+          </div>
+
+          <!-- Progreso del Paso -->
+          <div class="progress-bar">
+            <div class="progress" style="width: 100%"></div>
+          </div>
+
+          <!-- Estado del Formulario -->
+          <div class="form-status-info">
+            <p *ngIf="estudianteForm.valid" class="valid-status">
+              ✓ Formulario completado correctamente
+            </p>
+            <p *ngIf="!estudianteForm.valid" class="invalid-status">
+              ✗ Por favor completa todos los campos requeridos
+            </p>
+            <div *ngIf="!estudianteForm.valid && obtenerCamposInvalidos().length > 0" class="campos-invalidos">
+              <strong>Campos con errores:</strong>
+              <ul>
+                <li *ngFor="let campo of obtenerCamposInvalidos()">{{ campo }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- BOTONES -->
+          <div class="acciones-form">
+            <button type="button" class="btn-back" (click)="anteriorPaso()">
+              ⬅ Atrás
+            </button>
+
+            <button type="button" class="btn-cancel" (click)="cancelarEdicion()" *ngIf="editando">
+              Cancelar
+            </button>
+
+            <button type="submit" class="btn-save" [disabled]="!estudianteForm.valid">
+              {{ editando ? '💾 Actualizar' : '💾 Guardar' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- TABLA -->
+    <div class="lista">
+      <div class="lista-header">
+        <h3>📋 Lista de Estudiantes ({{ estudiantes.length }})</h3>
+      </div>
+
+      <div class="table-responsive" *ngIf="estudiantes.length > 0; else sinEstudiantes">
+        <table class="tabla-estudiantes">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Teléfono</th>
+              <th>Carrera</th>
+              <th>Código</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let estudiante of estudiantes; trackBy: trackByFn" class="tabla-row">
+              <td class="nombre-cell">
+                <strong>{{ estudiante.nombre }} {{ estudiante.apellido }}</strong>
+              </td>
+              <td class="correo-cell">{{ estudiante.correo }}</td>
+              <td class="telefono-cell">{{ estudiante.telefono }}</td>
+              <td class="carrera-cell">
+                <span class="carrera-badge">{{ estudiante.carrera }}</span>
+              </td>
+              <td class="codigo-cell">
+                <span class="codigo-badge">{{ estudiante.id }}</span>
+              </td>
+              <td class="acciones-tabla">
+                <button class="btn-details" title="Ver detalles"
+                  (click)="estudianteSeleccionado = estudiante">
+                  👁️ Ver
+                </button>
+
+                <button class="btn-edit" title="Editar"
+                  (click)="editarEstudiante(estudiante)">
+                  ✏️ Editar
+                </button>
+
+                <button class="btn-delete" title="Eliminar"
+                  (click)="eliminarEstudiante(estudiante.id!)">
+                  🗑️ Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #sinEstudiantes>
+        <div class="empty-state">
+          <p class="empty-icon">📚</p>
+          <p class="empty-text">No hay estudiantes registrados</p>
+          <p class="empty-hint">Completa el formulario para agregar el primer estudiante</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLES -->
+<div class="modal-overlay" *ngIf="estudianteSeleccionado" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>📄 Información del Estudiante</h2>
+      <button class="btn-close-modal" (click)="cerrarModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Nombre:</span>
+          <span class="info-value">{{ estudianteSeleccionado.nombre }} {{ estudianteSeleccionado.apellido }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Correo:</span>
+          <span class="info-value">{{ estudianteSeleccionado.correo }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Teléfono:</span>
+          <span class="info-value">{{ estudianteSeleccionado.telefono }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Edad:</span>
+          <span class="info-value">{{ estudianteSeleccionado.edad }} años</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Carrera:</span>
+          <span class="info-value"><span class="badge">{{ estudianteSeleccionado.carrera }}</span></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Código:</span>
+          <span class="info-value">{{ estudianteSeleccionado.id }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Género:</span>
+          <span class="info-value">{{ estudianteSeleccionado.genero }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Fecha de Nacimiento:</span>
+          <span class="info-value">{{ estudianteSeleccionado.fechaNacimiento | date: 'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="info-item full-width">
+          <span class="info-label">Dirección:</span>
+          <span class="info-value">{{ estudianteSeleccionado.direccion }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-modal-close" (click)="cerrarModal()">Cerrar</button>
+      <button class="btn-modal-edit" (click)="editarEstudiante(estudianteSeleccionado!)">
+        ✏️ Editar
+      </button>
+    </div>
+  </div>
+</div>
